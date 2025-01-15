@@ -1,13 +1,24 @@
 import matplotlib.pyplot as plt
 import glob
 import os
+import sys
 import numpy as np
 
-# Determina la directory di lavoro dell'Allrun (directory corrente da cui viene lanciato lo script)
-current_dir = os.getcwd()
+if len(sys.argv) > 1:
+    # Case 1: Argument provided (run from .sh file)
+    current_dir = sys.argv[1]
+    print(f"Running with case path provided as argument: {current_dir}")
+else:
+    # Case 2: No argument provided (run directly from terminal)
+    current_dir = os.path.dirname(os.path.realpath(__file__))
+    print(f"Running from script's location: {current_dir}")
+
+current_folder = os.path.basename(current_dir)
+
 
 # Costruisci il pattern per il file residuals.dat
 pattern = "postProcessing/residuals*/*/residuals.dat"
+#pattern = "postProcessing/fluid/residuals*/*/residuals.dat"
 
 # Trova il file corrispondente
 filepaths = glob.glob(pattern, recursive=True)
@@ -61,7 +72,7 @@ lines = [ax.plot([], [], label=name)[0] for name in field_names]
 ax.set_yscale('log')  # Scala logaritmica per una migliore visualizzazione
 ax.set_xlabel('Tempo')
 ax.set_ylabel('Residui')
-ax.set_title('Grafico dei residui nel tempo')
+ax.set_title('Grafico dei residui nel tempo per '+ current_folder)
 ax.legend()
 ax.grid(True)
 
